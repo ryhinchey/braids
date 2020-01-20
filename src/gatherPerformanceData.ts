@@ -1,28 +1,50 @@
-const fileType = require("file-type");
-const { getReqFromIds, pause, calculateCoverage } = require("./utils");
-const cookies = require("./cookies");
+import {
+  Browser,
+  CoverageEntry,
+  HttpMethod,
+  Headers,
+  ResourceType
+} from "puppeteer";
+import devices from "puppeteer/DeviceDescriptors";
+import { Config } from "./types";
+import calculateCoverage from "./calculateCoverage";
 
-async function gatherPerfData(site, browser) {
-  const requests = [];
+interface Request {
+  url: string;
+  method: HttpMethod;
+  headers: Headers;
+  redirects: string[];
+  resourceType: ResourceType;
+  response?: {
+    status: number;
+    headers: Headers;
+  };
+}
+
+async function gatherPerfData(config: Config, browser: Browser) {
+  const { url, cookies, userAgent, device } = config;
+  const requests: Request[] = [];
 
   const page = await browser.newPage();
   await page.setRequestInterception(true);
 
-  /* Cookies
+  if (cookies) {
     await page.setCookie(...cookies);
-  /*
-  
-  /* Device Emulation
-    const devices = require('puppeteer/DeviceDescriptors');
-    const iPhone = devices[ 'iPhone 8' ];
-    await page.emulate(iPhone);
-  */
+  }
 
-  /* Set User Agent
-    await page.setUserAgent(
-      "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-    );
-  */
+  if (device) {
+    const deviceToEmulate = devices[device];
+
+    if (!deviceToEmulate) {
+      throw new Error('Please specify a valid device to emulate: https://github.com/puppeteer/puppeteer/blob/master/lib/DeviceDescriptors.js');
+    }
+
+    await page.emulate(deviceToEmulate);
+  }
+
+  if (userAgent) {
+    await page.setUserAgent(userAgent);
+  }
 
   // create CDP session - https://github.com/aslushnikov/getting-started-with-cdp#using-puppeteers-cdpsession
   const client = await page.target().createCDPSession();
@@ -39,24 +61,12 @@ async function gatherPerfData(site, browser) {
 
   // Page request event handler
   page.on("request", request => {
-    /* Request Blocking
-        if (reqUrl.includes("maxymiser")) {
-          console.log(reqUrl);
-          console.log("blocking maxymiser");
-          request.abort();
-        } 
-    */
     const method = request.method();
     const headers = request.headers();
     const resourceType = request.resourceType();
     const redirects = request.redirectChain().map(req => {
       return req.url();
     });
-
-    let postData;
-    if (method === "POST") {
-      postData = request.postData();
-    }
 
     requests.push({
       url: request.url(),
@@ -85,7 +95,7 @@ async function gatherPerfData(site, browser) {
 
         existingRequest.response = resp;
       } catch (e) {
-        //console.log(`ERROR IN RESPONSE CALLBACK, ${e}`);
+        console.log(`Error in response callback, ${e}`);
       }
     }
   });
@@ -97,46 +107,48 @@ async function gatherPerfData(site, browser) {
   ]);
 
   // Navigate to page
-  await page.goto(site, { timeout: 25000, waitUntil: "networkidle2" });
+  await page.goto(url, { timeout: 25000, waitUntil: "networkidle2" });
 
   // Calculate Code Coverage
-  const [jsCoverage, cssCoverage] = await Promise.all([
+  const [jsCoverage, cssCoverage]: [
+    CoverageEntry[],
+    CoverageEntry[]
+  ] = await Promise.all([
     page.coverage.stopJSCoverage(),
     page.coverage.stopCSSCoverage()
   ]);
   const coverage = calculateCoverage([...jsCoverage, ...cssCoverage]);
 
   // Performance Entries
-  const entries = await page.evaluate(() =>
-    JSON.stringify(performance.getEntries())
+  const entries: string = await page.evaluate(() =>
+    JSON.stringify(window.performance.getEntries())
   );
-  const entryData = JSON.parse(entries).map(entry => {
-    return {
-      url: entry.name,
-      type: entry.entryType,
-      start: entry.startTime,
-      duration: entry.duration,
-      initiator: entry.initiatorType,
-      protocol: entry.nextHopProtocol
-    };
-  });
-  const { timing } = await page.evaluate(() => performance.toJSON());
+
+  const entryData = JSON.parse(entries).map(
+    (entry: PerformanceResourceTiming) => {
+      return {
+        url: entry.name,
+        type: entry.entryType,
+        start: entry.startTime,
+        duration: entry.duration,
+        initiator: entry.initiatorType,
+        protocol: entry.nextHopProtocol
+      };
+    }
+  );
+  const { timing }: { timing: PerformanceTiming } = await page.evaluate(() =>
+    window.performance.toJSON()
+  );
+
   const performance = { entries: entryData, timing };
 
   // Page title
   const title = await page.title();
 
-  // Screenshot
-  await page.screenshot({
-    path: "./test_data/image.jpg",
-    type: "jpeg",
-    fullPage: true
-  });
-
   await page.close();
 
   return {
-    site,
+    url,
     title,
     performance,
     coverage,
@@ -144,4 +156,4 @@ async function gatherPerfData(site, browser) {
   };
 }
 
-module.exports = gatherPerfData;
+export default gatherPerfData;
