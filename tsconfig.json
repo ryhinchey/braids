@@ -3,7 +3,7 @@
     "esModuleInterop": true,
     "noImplicitAny": true,
     "removeComments": true,
-    "outDir": "lib"
+    "outDir": "dist"
   },
   "include": [
     "src/**/*"

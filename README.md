@@ -1,14 +1,47 @@
 # Braids 
 
-> A tool to get data about a site's performance and network requests
+> A node module and cli to get data about a site's performance and network requests
 
 ## Installation
 ```sh
 npm install braids
 ```
 
+## Data
 
-## Usage example
+Each call to `run` will return the following data:
+
+```typescript
+interface SiteData {
+  url: string;
+  title: string; // document.title
+  performance: {
+    entries: PerformanceEntryList; // array of performance entries.  return value of window.performance.getEntries()
+    timing: PerformanceResourceTiming; // performance timing object.  return value of window.perormance.timing
+  };
+  coverage: {
+    [url: string]: { // each resource loaded by the page will be included
+      usedBytes: number;
+      totalBytes: number;
+    };
+  };
+  requests: {
+    url: string;
+    method: HttpMethod; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/puppeteer/v1/index.d.ts#L928
+    headers: Headers; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/puppeteer/v1/index.d.ts#L927
+    redirects: string[];
+    resourceType: ResourceType; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/puppeteer/v1/index.d.ts#L936
+    response?: {
+      status: number;
+      headers: Headers; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/puppeteer/v1/index.d.ts#L92
+    };
+  }[]
+
+}
+```
+
+
+## Module Usage example
 
 ```javascript
 import { startBrowser, run, stopBrowser } from 'braids';
@@ -23,11 +56,20 @@ async function getMySiteData() {
 }
 ```
 
+## CLI Usage Example
+```bash
+braids start-browser
+
+braids run http://www.mysite.com > mysite.json
+
+braids stop-browser
+
+```
+
 ## Development setup
 
 ```sh
 npm install
-npm test
 npm build
 ```
 

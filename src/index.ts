@@ -1,18 +1,18 @@
-import * as puppeteer from "puppeteer";
+import puppeteer, { Browser } from "puppeteer";
 import gatherPerformanceData from "./gatherPerformanceData";
-import { Config } from "./types";
+import { Config, SiteData } from "./types";
 
-let browser: puppeteer.Browser;
+let browser: Browser;
 
-export async function startBrowser() {
+export async function startBrowser(): Promise<void> {
   browser = await puppeteer.launch();
 }
 
-export function stopBrowser() {
+export function stopBrowser(): void {
   browser.close();
 }
 
-export async function run(config: Config) {
+export async function run(config: Config): Promise<SiteData> {
   const siteData = await gatherPerformanceData(config, browser);
 
   return siteData;

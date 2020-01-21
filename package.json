@@ -2,10 +2,14 @@
   "name": "braids",
   "version": "0.0.1",
   "description": "A tool to get data about a site's performance and network requests",
-  "main": "./lib/index.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "lint": "eslint src/**/*.ts"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "web performance",
     "puppeteer",
@@ -14,10 +18,13 @@
   "author": "Ryan Hinchey <rlhinchey@gmail.com> (http://twitter.com/ryhinchey)",
   "license": "MIT",
   "dependencies": {
-    "puppeteer": "1.8.0"
+    "puppeteer": "2.0.0"
   },
   "devDependencies": {
     "@types/puppeteer": "2.0.0",
+    "@typescript-eslint/eslint-plugin": "2.17.0",
+    "@typescript-eslint/parser": "2.17.0",
+    "eslint": "6.8.0",
     "typescript": "3.7.5"
   }
 }

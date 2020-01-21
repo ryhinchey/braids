@@ -1,19 +1,13 @@
 import { CoverageEntry } from "puppeteer";
+import { Coverages } from './types';
 
-interface Coverages {
-  [index: string]: {
-    usedBytes: number;
-    totalBytes: number;
-  };
-}
+function calculateCoverage(coverage: CoverageEntry[]): Coverages {
+  const coverages: Coverages = {};
 
-function calculateCoverage(coverage: CoverageEntry[]) {
-  let coverages: Coverages = {};
-
-  for (let entry of coverage) {
+  for (const entry of coverage) {
     const { url, text, ranges } = entry;
 
-    let totalBytes = text.length;
+    const totalBytes = text.length;
     let usedBytes = 0;
 
     for (const range of ranges) {
