@@ -29,7 +29,6 @@ interface SiteData {
     url: string;
     method: HttpMethod; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/puppeteer/v1/index.d.ts#L928
     headers: Headers; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/puppeteer/v1/index.d.ts#L927
-    redirects: string[];
     resourceType: ResourceType; // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/puppeteer/v1/index.d.ts#L936
     response?: {
       status: number;
@@ -58,12 +57,7 @@ async function getMySiteData() {
 
 ## CLI Usage Example
 ```bash
-braids start-browser
-
 braids run http://www.mysite.com > mysite.json
-
-braids stop-browser
-
 ```
 
 ## Development setup
@@ -73,7 +67,6 @@ npm install
 npm build
 ```
 
-
 ## Meta
 
 Ryan Hinchey – [@ryhinchey](https://twitter.com/ryhinchey) 
@@ -81,7 +74,6 @@ Ryan Hinchey – [@ryhinchey](https://twitter.com/ryhinchey)
 Distributed under the MIT license. See ``LICENSE.txt`` for more information.
 
 [https://github.com/ryhinchey/braids](https://github.com/ryinchey/braids)
-
 
 ## Contributing
 
