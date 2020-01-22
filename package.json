@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "A tool to get data about a site's performance and network requests",
   "main": "dist/index.js",
+  "bin": "dist/cli/index.js",
   "scripts": {
     "build": "tsc",
     "lint": "eslint src/**/*.ts"
@@ -18,9 +19,11 @@
   "author": "Ryan Hinchey <rlhinchey@gmail.com> (http://twitter.com/ryhinchey)",
   "license": "MIT",
   "dependencies": {
+    "commander": "4.1.0",
     "puppeteer": "2.0.0"
   },
   "devDependencies": {
+    "@types/node": "13.1.8",
     "@types/puppeteer": "2.0.0",
     "@typescript-eslint/eslint-plugin": "2.17.0",
     "@typescript-eslint/parser": "2.17.0",
