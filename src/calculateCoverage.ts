@@ -3,11 +3,12 @@ import { Coverages } from './types';
 
 function calculateCoverage(coverage: CoverageEntry[]): Coverages {
   const coverages: Coverages = {};
+  const encoder = new TextEncoder()
 
   for (const entry of coverage) {
     const { url, text, ranges } = entry;
 
-    const totalBytes = text.length;
+    const totalBytes = encoder.encode(text).length;
     let usedBytes = 0;
 
     for (const range of ranges) {
