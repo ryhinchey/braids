@@ -1,9 +1,4 @@
-import {
-  HttpMethod,
-  Headers,
-  ResourceType,
-  SetCookie
-} from "puppeteer"
+import { HttpMethod, Headers, ResourceType, SetCookie } from "puppeteer";
 
 export interface Config {
   url: string;

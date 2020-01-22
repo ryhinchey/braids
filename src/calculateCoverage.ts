@@ -1,9 +1,9 @@
 import { CoverageEntry } from "puppeteer";
-import { Coverages } from './types';
+import { Coverages } from "./types";
 
 function calculateCoverage(coverage: CoverageEntry[]): Coverages {
   const coverages: Coverages = {};
-  const encoder = new TextEncoder()
+  const encoder = new TextEncoder();
 
   for (const entry of coverage) {
     const { url, text, ranges } = entry;

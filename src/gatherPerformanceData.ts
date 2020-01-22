@@ -1,14 +1,12 @@
-import {
-  Browser,
-  CoverageEntry
-} from "puppeteer";
+import { Browser, CoverageEntry } from "puppeteer";
 import devices from "puppeteer/DeviceDescriptors";
 import { Config, Request, SiteData } from "./types";
 import calculateCoverage from "./calculateCoverage";
 
-
-
-async function gatherPerformanceData(config: Config, browser: Browser): Promise<SiteData> {
+async function gatherPerformanceData(
+  config: Config,
+  browser: Browser
+): Promise<SiteData> {
   const { url, cookies, userAgent, device } = config;
   const requests: Request[] = [];
 
@@ -22,7 +20,9 @@ async function gatherPerformanceData(config: Config, browser: Browser): Promise<
     const deviceToEmulate = devices[device];
 
     if (!deviceToEmulate) {
-      throw new Error('Please specify a valid device to emulate: https://github.com/puppeteer/puppeteer/blob/master/lib/DeviceDescriptors.js');
+      throw new Error(
+        "Please specify a valid device to emulate: https://github.com/puppeteer/puppeteer/blob/master/lib/DeviceDescriptors.js"
+      );
     }
 
     await page.emulate(deviceToEmulate);
@@ -109,7 +109,9 @@ async function gatherPerformanceData(config: Config, browser: Browser): Promise<
     JSON.parse(JSON.stringify(window.performance.getEntries()))
   );
 
-  const { timing }: { timing: PerformanceResourceTiming } = await page.evaluate(() =>
+  const {
+    timing
+  }: { timing: PerformanceResourceTiming } = await page.evaluate(() =>
     window.performance.toJSON()
   );
 
