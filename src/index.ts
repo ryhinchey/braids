@@ -1,3 +1,4 @@
+import url from "url";
 import puppeteer, { Browser } from "puppeteer";
 import gatherPerformanceData from "./gatherPerformanceData";
 import { Config, SiteData } from "./types";
@@ -18,7 +19,8 @@ export function stopBrowser(): void {
 }
 
 export async function run(config: Config): Promise<SiteData> {
-  const siteData = await gatherPerformanceData(config, browser.wsEndpoint());
+  url.parse(config.url);
 
+  const siteData = await gatherPerformanceData(config, browser.wsEndpoint());
   return siteData;
 }
