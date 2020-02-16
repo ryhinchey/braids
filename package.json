@@ -1,6 +1,6 @@
 {
   "name": "braids",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A tool to get data about a site's performance and network requests",
   "author": "Ryan Hinchey <rlhinchey@gmail.com> (http://twitter.com/ryhinchey)",
   "license": "MIT",
