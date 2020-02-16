@@ -1,15 +1,15 @@
-import { Browser, CoverageEntry } from "puppeteer";
+import puppeteer, { CoverageEntry } from "puppeteer";
 import devices from "puppeteer/DeviceDescriptors";
 import { Config, Request, SiteData } from "./types";
 import calculateCoverage from "./calculateCoverage";
 
 async function gatherPerformanceData(
   config: Config,
-  browser: Browser
+  browserWSEndpoint: string
 ): Promise<SiteData> {
   const { url, cookies, userAgent, device } = config;
   const requests: Request[] = [];
-
+  const browser = await puppeteer.connect({ browserWSEndpoint });
   const page = await browser.newPage();
 
   if (cookies) {

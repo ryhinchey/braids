@@ -18,7 +18,7 @@ export function stopBrowser(): void {
 }
 
 export async function run(config: Config): Promise<SiteData> {
-  const siteData = await gatherPerformanceData(config, getBrowser());
+  const siteData = await gatherPerformanceData(config, browser.wsEndpoint());
 
   return siteData;
 }
