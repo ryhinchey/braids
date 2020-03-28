@@ -21,9 +21,14 @@ export function stopBrowser(): void {
 }
 
 export async function run(config: Config): Promise<SiteData> {
-  // throw error if url is not a string or can't be parsed
-  url.parse(config.url);
+  try {
+    if (typeof config.url !== "string") {
+      throw new Error("config.url must be a string");
+    }
 
-  const siteData = await gatherPerformanceData(config, browser.wsEndpoint());
-  return siteData;
+    const siteData = await gatherPerformanceData(config, browser.wsEndpoint());
+    return siteData;
+  } catch (error) {
+    console.error(error);
+  }
 }
