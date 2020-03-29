@@ -1,4 +1,3 @@
-import url from "url";
 import puppeteer, { Browser, LaunchOptions } from "puppeteer";
 import gatherPerformanceData from "./gatherPerformanceData";
 import { Config, SiteData } from "./types";
